@@ -1,0 +1,26 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+//设置项目的运行环境
+buildscript {
+    //用于设置java依赖库管理，可以使maven/ivy，这里利用jcenter来管理依赖库
+    repositories {
+        jcenter()
+    }
+    //依赖的库，gradle会从jcenter远程库下载响应的依赖
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.0.0-alpha1'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+//设置全部的sub-project/modules使用jcenter作为java依赖库
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

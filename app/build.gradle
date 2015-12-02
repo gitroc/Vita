@@ -1,0 +1,86 @@
+import java.text.SimpleDateFormat
+
+apply plugin: 'com.android.application' //设置使用Android插件构建项目
+
+//设置项目参数
+android {
+    signingConfigs {
+        release {
+            keyAlias 'vitasigned'
+            keyPassword 'vitasigned'
+            storeFile file('D:/project/code/Vita/vitasigned.jks')
+            storePassword 'vitasigned'
+        }
+    }
+    compileSdkVersion 23 //编译时使用的SDK版本
+    buildToolsVersion "23.0.1" //buildTools版本，本地必须有这个版本。如果没有，本虚使用本地其他版本代替。
+    defaultConfig {
+        applicationId "com.vita" //应用包名
+        minSdkVersion 14 //最小SDK版本
+        targetSdkVersion 23 //目标SDK版本
+        versionCode 1   // 版本号
+        versionName "1.0"   //版本名
+    }
+    buildTypes {
+        //编译命令 gradlew assembleRelease
+        release {
+            // 不显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+
+            minifyEnabled true
+            zipAlignEnabled true
+            // 移除无用的resource文件
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //混淆文件的位置
+            signingConfig signingConfigs.release
+            applicationVariants.all { variant ->
+                def date = new SimpleDateFormat("yyyyMMddHHmmss")
+                variant.outputs.each { output ->
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        // 输出apk名称为boohee_v1.0_2015-01-15_wandoujia.apk
+                        def fileName = "${variant.productFlavors[0].name}-v${defaultConfig.versionName}-${date.format(new Date())}.apk"
+                        output.outputFile = new File(outputFile.parent, fileName)
+                    }
+                }
+            }
+        }
+    }
+    productFlavors {
+        _163 {}
+        _360 {}
+        AnZhi {}
+        AnZhuo {}
+        AppChina {}
+        Baidu {}
+        cxp {}
+        ChinaTelecom {}
+        CoolMart {}
+        eoe {}
+        gfan {}
+        HuaWei {}
+        Lenovo {}
+        MuMaYi {}
+        myapp {}
+        NduoA {}
+        SuNing {}
+        WanDouJia {}
+        XiaoMi {}
+    }
+    productFlavors.all {
+        flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+    }
+}
+
+dependencies {
+    //编译Libs下所有jar包
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    //多个文件
+//    testCompile 'junit:junit:4.12'
+    //编译第三方库
+//    compile 'com.android.support:appcompat-v7:23.1.1'
+//    compile 'com.android.support:design:23.1.1'
+//    compile 'com.squareup.okio:okio:1.3.0'
+//    compile 'com.squareup.okhttp:okhttp:2.3.0'
+}
